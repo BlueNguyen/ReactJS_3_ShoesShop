@@ -5,7 +5,9 @@ export default class ProductList extends Component {
     renderListShoes= () => {
         return this.props.shoeArr.map((item) => {
             return <ProductItem data={item} key={item.id} 
-            handleClickView= {this.props.handleViewDetail}/>
+            handleClickView= {this.props.handleViewDetail}
+            handleCartAdd={this.props.handleViewCartAdd}
+            />
         })
     }
   render() {

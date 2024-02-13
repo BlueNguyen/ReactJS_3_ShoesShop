@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ProductList from "./ProductList";
 import Modal from "./Modal";
+import CartList from "./CartList";
 
 export default class ShoeStore extends Component {
   state = {
@@ -147,12 +148,26 @@ export default class ShoeStore extends Component {
       },
     ],
     detail: {},
+    cartItems: [],
   };
   handleChangeDetail = (shoe) => {
     this.setState({
       detail: shoe,
     });
   };
+
+  handleAddToCart = (shoe) => {
+    this.setState((prevState) => ({
+      cartItems: [...prevState.cartItems, shoe],
+    }));
+  };
+
+  handleRemoveFromCart = (id) => {
+    this.setState((prevState) => ({
+      cartItems: prevState.cartItems.filter((item) => item.id !== id),
+    }));
+  };
+
   render() {
     return (
       <div className="container-fluid">
@@ -180,12 +195,12 @@ export default class ShoeStore extends Component {
                 class="nav-link"
                 id="v-pills-profile-tab"
                 data-toggle="pill"
-                href="#shop"
+                href="#cart"
                 role="tab"
                 aria-controls="v-pills-profile"
                 aria-selected="false"
               >
-                Shop
+                Cart <i className="fa fa-shopping-cart"></i>
               </a>
             </div>
           </div>
@@ -201,20 +216,25 @@ export default class ShoeStore extends Component {
                 <ProductList
                   shoeArr={this.state.shoeArr}
                   handleViewDetail={this.handleChangeDetail}
+                  handleViewCartAdd={this.handleAddToCart}
+                  handleViewCartRemove={this.handleRemoveFromCart}
                 />
               </div>
               <div
                 class="tab-pane fade"
-                id="shop"
+                id="cart"
                 role="tabpanel"
                 aria-labelledby="v-pills-profile-tab"
               >
-                ...
+                <CartList
+                  cartItems={this.state.cartItems}
+                  handleCartRemove={this.handleRemoveFromCart}
+                />
               </div>
             </div>
           </div>
 
-          <Modal detailModal={this.state.detail}/>
+          <Modal detailModal={this.state.detail} />
         </div>
       </div>
     );
