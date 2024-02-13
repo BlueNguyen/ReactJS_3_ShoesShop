@@ -157,9 +157,20 @@ export default class ShoeStore extends Component {
   };
 
   handleAddToCart = (shoe) => {
-    this.setState((prevState) => ({
-      cartItems: [...prevState.cartItems, shoe],
-    }));
+    const { cartItems } = this.state;
+    const existingItem = cartItems.find((item) => item.id === shoe.id);
+
+    if (existingItem) {
+      this.setState((prevState) => ({
+        cartItems: prevState.cartItems.map((item) =>
+          item.id === shoe.id ? { ...item, quantity: item.quantity + 1 } : item
+        ),
+      }));
+    } else {
+      this.setState((prevState) => ({
+        cartItems: [...prevState.cartItems, { ...shoe, quantity: 1 }],
+      }));
+    }
   };
 
   handleRemoveFromCart = (id) => {
@@ -168,7 +179,43 @@ export default class ShoeStore extends Component {
     }));
   };
 
+  handlePayment = () => {
+    const totalAmount = this.state.cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    alert(`Total amount to pay: $${totalAmount}`);
+
+    this.setState({
+      cartItems: [],
+    });
+  };
+
+  handleIncreaseQuantity = (id) => {
+    this.setState((prevState) => ({
+      cartItems: prevState.cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      ),
+    }));
+  };
+
+  handleDecreaseQuantity = (id) => {
+    this.setState((prevState) => ({
+      cartItems: prevState.cartItems.map((item) =>
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      ),
+    }));
+  };
+
+  
+
   render() {
+    const totalAmount = this.state.cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
     return (
       <div className="container-fluid">
         <div className="row">
@@ -229,6 +276,10 @@ export default class ShoeStore extends Component {
                 <CartList
                   cartItems={this.state.cartItems}
                   handleCartRemove={this.handleRemoveFromCart}
+                  handlePayment={this.handlePayment}
+                  totalAmount={totalAmount}
+                  handleIncreaseQuantity={this.handleIncreaseQuantity}
+                  handleDecreaseQuantity={this.handleDecreaseQuantity}
                 />
               </div>
             </div>

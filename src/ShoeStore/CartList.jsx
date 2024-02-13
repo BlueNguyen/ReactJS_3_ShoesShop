@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 
 export default class CartList extends Component {
+  handleIncreaseQuantity = (id) => {
+    this.props.handleIncreaseQuantity(id);
+  };
+
+  handleDecreaseQuantity = (id) => {
+    this.props.handleDecreaseQuantity(id);
+  };
+
   renderListCart = () => {
     return this.props.cartItems.map((item, index) => {
       return (
@@ -19,8 +27,23 @@ export default class CartList extends Component {
                 this.props.handleCartRemove(item.id);
               }}
             >
-              Remove &nbsp;
+
               <i className="fa fa-trash"></i>
+            </button>
+          </td>
+          <td>
+            <button
+              className="btn btn-primary mr-2"
+              onClick={() => this.handleDecreaseQuantity(item.id)}
+            >
+              -
+            </button>
+            <span className="mr-2">{item.quantity}</span>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.handleIncreaseQuantity(item.id)}
+            >
+              +
             </button>
           </td>
         </tr>
@@ -46,6 +69,25 @@ export default class CartList extends Component {
           </tr>
         </thead>
         <tbody>{this.renderListCart()}</tbody>
+        <tfoot>
+          <tr>
+            <th scope="col" colSpan="5">
+              Thành tiền
+            </th>
+            <td>{this.props.totalAmount}$</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colSpan="6">
+              <button
+                className="btn btn-warning"
+                onClick={this.props.handlePayment}
+              >
+                Thanh Toán
+              </button>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     );
   }
